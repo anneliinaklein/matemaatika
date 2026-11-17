@@ -34,6 +34,7 @@ input{text-transform:uppercase}
 .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:550px;margin:15px auto}
 .choice{background:#eeeaff;color:#42327b;font-size:1.3rem;border:2px solid #d6cafb}
 .choice:hover{border-color:#7051d4}
+.compare-choice{font-size:2.5rem;min-height:85px;font-weight:900;background:#e8f5ff;color:#244c85}
 @media(max-width:480px){.choices{grid-template-columns:1fr}}
 </style>
 </head>
@@ -149,7 +150,7 @@ function generate(){
  if(topic==="sub"){a=rand(2,max);b=rand(1,a);ans=a-b;expression=`${a} − ${b} = ?`;hint=`ALUSTA ARVUST ${a} JA LOENDA ${b} VÕRRA TAGASI.`;}
  if(topic==="mul"){a=rand(2,grade===2?5:10);b=rand(2,10);ans=a*b;expression=`${a} × ${b} = ?`;hint=`LIIDA ARVU ${a} KOKKU ${b} KORDA.`;}
  if(topic==="div"){b=rand(2,grade===2?5:10);ans=rand(2,10);a=b*ans;expression=`${a} ÷ ${b} = ?`;hint=`MILLIST ARVU TULEB ${b}-GA KORRUTADA, ET SAADA ${a}?`;}
- if(topic==="compare"){a=rand(0,100);b=rand(0,100);ans=a>b?1:a<b?2:3;context="SISSESTA 1, KUI ESIMENE ARV ON SUUREM; 2, KUI TEINE ARV ON SUUREM; 3, KUI ARVUD ON VÕRDSED.";expression=`${a} JA ${b}`;hint="VÕRDLE KÕIGEPEALT KÜMNELISI JA SIIS ÜHElisi.";}
+ if(topic==="compare"){a=rand(0,100);b=rand(0,100);ans=a>b?">":a<b?"<":"=";context="VALI ÕIGE VÕRDLUSMÄRK.";expression=`${a}   ?   ${b}`;options=["<","=",">"];hint="SUUREM ARV ON MÄRGI AVATUD POOLEL. VÕRDSETE ARVUDE KORRAL VALI =.";}
  if(topic==="story"){a=rand(2,grade===1?12:grade===2?45:150);b=rand(1,grade===1?8:grade===2?40:120);if(grade===1&&a+b>20)b=Math.max(1,20-a);const idx=otherIndex(storyTemplates.length,lastStory);lastStory=idx;const s=storyTemplates[idx](a,b);ans=s.ans;context=s.context;expression="?";hint=s.hint;}
  if(topic==="shape"){if(grade===3){a=rand(2,15);b=rand(2,15);ans=2*(a+b);context=`RISTKÜLIKU PIKKUS ON ${a} CM JA LAIUS ${b} CM. LEIA ÜMBERMÕÕT SENTIMEETRITES.`;expression="? CM";hint="LIIDA KOKKU KÕIK NELI KÜLGE.";}else{const shapes=[["KOLMNURGAl",3],["RUUDUL",4],["RISTKÜLIKUL",4],["VIISNURGAL",5]];const [name,n]=pick(shapes);ans=n;context=`MITU KÜLGE ON ${name}?`;expression="?";hint="LOENDA KUJUNDI SIRGED KÜLJED.";}}
  if(topic==="life"){if(Math.random()<.5){a=rand(1,10);b=rand(1,10);ans=a+b;context=`SUL ON ${a} EUROT JA SAAD JUURDE ${b} EUROT. MITU EUROT SUL NÜÜD ON?`;expression="? €";hint="LIIDA EUROD KOKKU.";}else{a=rand(1,11);b=rand(1,12-a);ans=a+b;context=`KELL ON ${a}:00. MÖÖDUB ${b} TUNDI. MIS KELL ON? SISESTA AINULT TUND.`;expression="?:00";hint="LIIDA ALGSELE KELLAAJALE MÖÖDUNUD TUNNID.";}}
@@ -179,7 +180,7 @@ function newQuestion(){
  const hasChoices=!!question.options;
  $("choices").classList.toggle("hidden",!hasChoices);
  $("answerForm").classList.toggle("hidden",hasChoices);
- if(hasChoices){question.options.forEach(opt=>{const btn=document.createElement("button");btn.className="choice";btn.type="button";btn.textContent=opt;btn.addEventListener("click",()=>checkAnswer(opt));$("choices").append(btn);});}
+ if(hasChoices){question.options.forEach(opt=>{const btn=document.createElement("button");btn.className="choice"+(topic==="compare"?" compare-choice":"");btn.type="button";btn.textContent=opt;btn.addEventListener("click",()=>checkAnswer(opt));$("choices").append(btn);});}
  renderStats();if(!hasChoices)$("answer").focus();
 }
 function checkAnswer(value){
