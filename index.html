@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#7657d8">
-<title>Matemaatikamaa – õpi omas tempos</title>
+<title>ÕPIME RÕÕMUGA – MATEMAATIKA JA EESTI KEEL</title>
 <style>
 :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#24334f;background:#f7f5ff}*{box-sizing:border-box}
-body{text-transform:uppercase;margin:0;background:radial-gradient(circle at 8% 6%,#fff0b8 0,transparent 28%),radial-gradient(circle at 95% 4%,#d8eaff 0,transparent 32%),#f7f5ff;min-height:100vh}
+body{margin:0;background:radial-gradient(circle at 8% 6%,#fff0b8 0,transparent 28%),radial-gradient(circle at 95% 4%,#d8eaff 0,transparent 32%),#f7f5ff;min-height:100vh}
 main{max-width:1040px;margin:auto;padding:22px 18px 60px}header{text-align:center;padding:20px 0 12px}
-.brand{font-size:clamp(2.3rem,6vw,4rem);font-weight:900;letter-spacing:-.06em;color:#6346bc;margin:0}
+.brand{font-size:clamp(2rem,5.5vw,3.8rem);font-weight:900;letter-spacing:-.06em;color:#6346bc;margin:0}
 .subtitle{color:#64718a;font-size:1.1rem;margin:7px 0}.pill{display:inline-block;background:#fff;border:1px solid #e6defd;border-radius:99px;padding:7px 15px;color:#7559ba;font-weight:750;font-size:.85rem}
 .panel{background:white;border:1px solid #e9e7f4;border-radius:26px;padding:26px;box-shadow:0 12px 36px #5e5c9c12;margin-top:22px}
 h2{font-size:1.55rem;margin:0 0 8px}p{line-height:1.5}.muted{color:#66748c}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
@@ -21,36 +21,42 @@ button{font:inherit;cursor:pointer;border:0;border-radius:17px;padding:14px 18px
 .problem{text-align:center;background:#f8f6ff;border-radius:22px;padding:30px 16px;margin:20px 0}.problem .expression{font-size:clamp(2rem,6vw,3.5rem);font-weight:900;white-space:pre-line;line-height:1.3}
 .problem .context{font-size:1.1rem;max-width:650px;margin:0 auto 14px;line-height:1.6}
 .answerline{display:flex;justify-content:center;gap:10px;max-width:440px;margin:0 auto}
-input{text-transform:uppercase;font:inherit;width:100%;min-width:0;border:2px solid #d9d4ed;border-radius:14px;padding:14px;font-size:1.3rem;text-align:center}
+input{font:inherit;width:100%;min-width:0;border:2px solid #d9d4ed;border-radius:14px;padding:14px;font-size:1.3rem;text-align:center}
 .feedback{text-align:center;min-height:30px;font-weight:800;margin-top:16px}.good{color:#16865c}.retry{color:#a45c18}
 .stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.stat{background:#f3f0ff;border-radius:12px;padding:10px 15px;font-weight:700}
 .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .hidden{display:none!important}footer{text-align:center;color:#7a849a;margin-top:30px;font-size:.86rem}
 @media(max-width:650px){.grid{grid-template-columns:1fr}.grade{min-height:115px}.panel{padding:18px}.answerline{flex-direction:column}.brand{letter-spacing:-.04em}}
-/* KÕIK NÄHTAVAD TEKSTID, KA DÜNAAMILISED ÜLESANDED */
-body, body * { text-transform: uppercase !important; }
+
+/* Ka JavaScriptiga loodud tekstid kuvatakse läbivalt suurtähtedega. */
+body{text-transform:uppercase}
+input{text-transform:uppercase}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:550px;margin:15px auto}
+.choice{background:#eeeaff;color:#42327b;font-size:1.3rem;border:2px solid #d6cafb}
+.choice:hover{border-color:#7051d4}
+@media(max-width:480px){.choices{grid-template-columns:1fr}}
 </style>
 </head>
 <body><main>
-<header><span class="pill">🌟 Õpime rõõmuga!</span><h1 class="brand">Matemaatikamaa</h1><p class="subtitle">Matemaatika 1.–3. klassile • Õpi omas tempos</p></header>
-<section id="home" class="panel"><h2>Millises klassis sa õpid? 🎒</h2><p class="muted">Vali oma klass ja avasta põnevaid matemaatikaülesandeid!</p><div class="grid" id="grades"></div></section>
-<section id="topics" class="panel hidden"><div class="topbar"><button class="back" id="backHome">← Klasside juurde</button><span class="pill" id="gradeBadge"></span></div><h2 style="margin-top:20px">Mida täna harjutame?</h2><p class="muted">Vali teema. Kiirustama ei pea!</p><div class="grid" id="topicGrid"></div></section>
+<header><span class="pill">🌟 ÕPIME RÕÕMUGA!</span><h1 class="brand">ÕPIME RÕÕMUGA</h1><p class="subtitle">MATEMAATIKA JA EESTI KEEL • 1.–3. KLASS</p></header>
+<section id="home" class="panel"><h2>MILLISES KLASSIS SA ÕPID? 🎒</h2><p class="muted">VALI OMA KLASS JA AVASTA PÕNEVAID ÜLESANDEID!</p><div class="grid" id="grades"></div></section>
+<section id="topics" class="panel hidden"><div class="topbar"><button class="back" id="backHome">← Klasside juurde</button><span class="pill" id="gradeBadge"></span></div><h2 style="margin-top:20px">MIDA TÄNA HARJUTAME?</h2><p class="muted">Vali teema. Kiirustama ei pea!</p><div class="grid" id="topicGrid"></div></section>
 <section id="exercise" class="panel hidden"><div class="topbar"><button class="back" id="backTopics">← Teemade juurde</button><span class="pill" id="exerciseBadge"></span></div>
 <div class="problem"><div class="context" id="context"></div><div class="expression" id="expression"></div></div>
-<form id="answerForm" class="answerline"><input id="answer" type="number" step="any" inputmode="decimal" autocomplete="off" aria-label="Sinu vastus" placeholder="Sinu vastus" required><button class="primary" id="check" type="submit">Kontrolli ✓</button></form>
+<div id="choices" class="choices hidden"></div><form id="answerForm" class="answerline"><input id="answer" type="number" step="any" inputmode="decimal" autocomplete="off" aria-label="Sinu vastus" placeholder="Sinu vastus" required><button class="primary" id="check" type="submit">Kontrolli ✓</button></form>
 <div class="feedback" id="feedback" aria-live="polite"></div><div id="hintBox" class="hint hidden"></div>
 <div class="actions"><button class="secondary" id="hintBtn" type="button">💡 Näita vihjet</button><button class="secondary" id="nextBtn" type="button">Järgmine ülesanne →</button></div>
 <div class="stats" style="margin-top:20px"><span class="stat">⭐ Õigesti: <span id="correct">0</span></span><span class="stat">📘 Lahendatud: <span id="attempts">0</span></span></div>
 <p class="muted" style="text-align:center;font-size:.85rem">Tulemused salvestatakse ainult selles seadmes. Võistlust ega ajapiirangut ei ole.</p>
 </section>
-<footer>💜 Matemaatikamaa • Iga samm loeb!</footer>
+<footer>💜 ÕPIME RÕÕMUGA • IGA SAMM LOEB!</footer>
 </main>
 <script>
 "use strict";
 const catalog={
-1:[["➕","Liitmine","Liidame 20 piires","add"],["➖","Lahutamine","Lahutame 20 piires","sub"],["🔢","Arvude võrdlemine","Suurem ja väiksem","compare"],["🧩","Tekstülesanded","Arvutame koos","story"],["📐","Geomeetria","Kujundid ja nurgad","shape"],["🕒","Kell ja raha","Tunnid ja eurod","life"]],
-2:[["➕","Liitmine","Liidame 100 piires","add"],["➖","Lahutamine","Lahutame 100 piires","sub"],["✖️","Korrutamine","Korrutustabeli algus","mul"],["➗","Jagamine","Jagame võrdseteks osadeks","div"],["🧩","Tekstülesanded","Mõtle ja arvuta","story"],["📏","Mõõtühikud","Sentimeetrid ja meetrid","measure"]],
-3:[["➕","Liitmine","Liidame 1000 piires","add"],["➖","Lahutamine","Lahutame 1000 piires","sub"],["✖️","Korrutamine","Korrutustabel","mul"],["➗","Jagamine","Jagame täpselt","div"],["🧩","Tekstülesanded","Mitme sammuga ülesanded","story"],["📐","Geomeetria","Ümbermõõt ja kujundid","shape"],["📏","Mõõtühikud","Pikkus ja aeg","measure"]],
+1:[["➕","LIITMINE","ARVUTAME 20 PIIRES","add"],["➖","LAHUTAMINE","ARVUTAME 20 PIIRES","sub"],["🔢","ARVUDE VÕRDLEMINE","SUUREM JA VÄIKSEM","compare"],["🧩","TEKSTÜLESANDED","ERINEVAD LOOD","story"],["📐","GEOMEETRIA","KUJUNDID","shape"],["🕒","KELL JA RAHA","IGAPÄEVASED ÜLESANDED","life"],["🔤","TÄHED JA HÄÄLIKUD","TUNNE TÄHTI","letters"],["👏","SILBID","HARJUTAME SILBITAMIST","syllables"],["📖","LOEME SÕNU","VALI ÕIGE SÕNA","readwords"],["🧠","LOEME LAUSEID","LOE JA MÕISTA","readsentences"],["✏️","PUUDUV TÄHT","TÄIENDA SÕNA","missing"]],
+2:[["➕","LIITMINE","100 PIIRES","add"],["➖","LAHUTAMINE","100 PIIRES","sub"],["✖️","KORRUTAMINE","KORRUTUSTABELI ALGUS","mul"],["➗","JAGAMINE","VÕRDSETEKS OSADEKS","div"],["🧩","TEKSTÜLESANDED","ERINEVAD LOOD","story"],["📏","MÕÕTÜHIKUD","SENTIMEETRID JA MEETRID","measure"],["📚","SÕNAD JA LAUSED","EESTI KEELE HARJUTUSED","language"],["✏️","ÕIGEKIRI","PUUDUV TÄHT","missing"],["🧠","LOETUST ARUSAAMINE","LOE JA VASTA","readsentences"]],
+3:[["➕","LIITMINE","1000 PIIRES","add"],["➖","LAHUTAMINE","1000 PIIRES","sub"],["✖️","KORRUTAMINE","KORRUTUSTABEL","mul"],["➗","JAGAMINE","JAGAME TÄPSELT","div"],["🧩","TEKSTÜLESANDED","ERINEVAD LOOD","story"],["📐","GEOMEETRIA","ÜMBERMÕÕT","shape"],["📏","MÕÕTÜHIKUD","PIKKUS JA AEG","measure"],["📚","EESTI KEEL","SÕNAD JA LAUSED","language"],["✏️","ÕIGEKIRI","PUUDUV TÄHT","missing"],["🧠","LOETUST ARUSAAMINE","LOE JA VASTA","readsentences"]]
 };
 const $=id=>document.getElementById(id);
 let grade=1,topic="add",question=null,solved=false,wrongTried=false;
@@ -63,24 +69,81 @@ function save(s){try{localStorage.setItem(key(),JSON.stringify(s));}catch{}}
 function renderStats(){const s=stats();$("correct").textContent=s.correct;$("attempts").textContent=s.attempts;}
 function selectGrade(g){grade=g;$("gradeBadge").textContent=g+". klass";$("topicGrid").innerHTML="";catalog[g].forEach(([emoji,title,desc,id])=>{const b=document.createElement("button");b.className="topic";b.innerHTML=`<span class="emoji">${emoji}</span><strong>${title}</strong><small>${desc}</small>`;b.addEventListener("click",()=>selectTopic(id,title));$("topicGrid").append(b);});show("topics");}
 function selectTopic(id,title){topic=id;$("exerciseBadge").textContent=grade+". klass · "+title;newQuestion();show("exercise");}
+const readingWords=[
+["KASS","🐱","KAS-S"],["KOER","🐶","KOER"],["KALA","🐟","KA-LA"],["MAJA","🏠","MA-JA"],["AUTO","🚗","AU-TO"],["PALL","⚽","PALL"],["ÕUN","🍎","ÕUN"],["KARU","🐻","KA-RU"],["LILL","🌸","LILL"],["PÄIKE","☀️","PÄI-KE"],["JÄNES","🐰","JÄ-NES"],["LUMI","❄️","LU-MI"],["RAAMAT","📘","RAA-MAT"],["LAMP","💡","LAMP"],["SAI","🥖","SAI"]];
+const sentenceTasks=[
+["KASS MAGAB DIIVANIL.","KES MAGAB DIIVANIL?",["KASS","KOER","KARU","LIND"],"KASS"],
+["JÜRI SÕIDAB RATTAGA.","MILLEGA JÜRI SÕIDAB?",["RATTAGA","BUSSIGA","PAADIGA","RONGIGA"],"RATTAGA"],
+["MARI JOOB PIIMA.","MIDA MARI JOOB?",["PIIMA","VETT","MAHLA","TEED"],"PIIMA"],
+["EMA KÜPSETAB KOOKI.","MIDA EMA KÜPSETAB?",["KOOKI","SAIA","LEIBA","PANNKOOKI"],"KOOKI"],
+["KOER JOOKSEB ÕUES.","KUS KOER JOOKSEB?",["ÕUES","TOAS","KOOLIS","POES"],"ÕUES"],
+["ANNA PANEB KOLLASE MÜTSI PÄHE.","MIS VÄRVI ON MÜTS?",["KOLLASE","SINISE","PUNASE","ROHELISE"],"KOLLASE"],
+["ISAL ON KAKS ÕUNA.","MITU ÕUNA ON ISAL?",["KAKS","KOLM","NELI","VIIS"],"KAKS"],
+["LAPS LOEB VOODIS RAAMATUT.","MIDA LAPS LOEB?",["RAAMATUT","LEHTE","KIRJA","KAARTI"],"RAAMATUT"]
+];
+const storyTemplates=[
+(a,b)=>({context:`MARIL OLI ${a} KLEEPSU. TA SAI JUURDE ${b} KLEEPSU. MITU KLEEPSU ON NÜÜD?`,ans:a+b,hint:"JUURDE SAAMISEL LIIDA."}),
+(a,b)=>({context:`JÜRI KORJAS ${a} KÄBI. SIIS LEIDIS TA VEEL ${b} KÄBI. MITU KÄBI TAL KOKKU ON?`,ans:a+b,hint:"LIIDA KÄBIDE ARVUD."}),
+(a,b)=>({context:`ANNAL ON ${a+b} PLIATSIT. TA ANNAB SÕBRALE ${b} PLIATSIT. MITU PLIATSIT JÄÄB ANNALE?`,ans:a,hint:"ÄRA ANDMISEL LAHUTA."}),
+(a,b)=>({context:`OTTO NÄGI ${a} LINNU JA LIISA NÄGI ${b} LINNU. MITU LINDU NAD KOKKU NÄGID?`,ans:a+b,hint:"LIIDA MÕLEMA LAPSE LINNUD."}),
+(a,b)=>({context:`KARLIL OLI ${a+b} KOMMI. TA SÕI ÄRA ${b} KOMMI. MITU KOMMI JÄI ALLES?`,ans:a,hint:"LAHUTA ÄRA SÖÖDUD KOMMID."}),
+(a,b)=>({context:`ÕUES KASVAS ${a} PUNAST JA ${b} KOLLAST LILLE. MITU LILLE KASVAS KOKKU?`,ans:a+b,hint:"LIIDA PUNASED JA KOLLASED LILLED."}),
+(a,b)=>({context:`LAUAL OLI ${a+b} ÕUNA. EMA VÕTTIS ${b} ÕUNA. MITU ÕUNA JÄI LAUALE?`,ans:a,hint:"LAHUTA VÕETUD ÕUNAD."}),
+(a,b)=>({context:`METSAS OLI ${a} JÄNEST. JUURDE TULI ${b} JÄNEST. MITU JÄNEST ON NÜÜD?`,ans:a+b,hint:"LIIDA JÄNESED KOKKU."})
+];
+let lastStory=-1,lastReading=-1;
+function otherIndex(length,last){if(length<2)return 0;let n=rand(0,length-2);return n>=last?n+1:n;}
 function generate(){
  const max=grade===1?20:grade===2?100:1000;
- let a,b,ans,context="",expression="",hint="";
- if(topic==="add"){a=rand(1,max-1);b=rand(1,max-a);ans=a+b;expression=`${a} + ${b} = ?`;hint=`Alusta arvust ${a} ja loenda ${b} võrra edasi.`;}
- if(topic==="sub"){a=rand(2,max);b=rand(1,a);ans=a-b;expression=`${a} − ${b} = ?`;hint=`Alusta arvust ${a} ja loenda ${b} võrra tagasi.`;}
- if(topic==="mul"){a=rand(2,grade===2?5:10);b=rand(2,10);ans=a*b;expression=`${a} × ${b} = ?`;hint=`Liida arvu ${a} kokku ${b} korda.`;}
- if(topic==="div"){b=rand(2,grade===2?5:10);ans=rand(2,10);a=b*ans;expression=`${a} ÷ ${b} = ?`;hint=`Millise arvuga tuleb ${b} korrutada, et saada ${a}?`;}
- if(topic==="compare"){a=rand(0,100);b=rand(0,100);ans=a>b?1:a<b?2:3;context="Vali õige vastuse number: 1 = esimene arv on suurem, 2 = teine arv on suurem, 3 = arvud on võrdsed.";expression=`${a}   ja   ${b}`;hint="Võrdle kõigepealt kümnelisi ja seejärel ühelisi.";}
- if(topic==="story"){a=rand(2,grade===1?12:grade===2?45:150);b=rand(2,grade===1?8:grade===2?40:120);if(grade===1&&a+b>20)b=20-a;if(b<1)b=1;ans=a+b;context=`Maril oli ${a} kleepsu. Ta sai juurde ${b} kleepsu. Mitu kleepsu on Maril nüüd?`;expression="?";hint="Kui asju tuleb juurde, tuleb arvud liita.";}
- if(topic==="shape"){if(grade===3){a=rand(2,15);b=rand(2,15);ans=2*(a+b);context=`Ristküliku pikkus on ${a} cm ja laius ${b} cm. Leia ümbermõõt sentimeetrites.`;expression="? cm";hint="Liida kokku kõik neli külge: pikkus + laius + pikkus + laius.";}else{const shapes=[["kolmnurgal",3],["ruudul",4],["ristkülikul",4],["viisnurgal",5]];const [name,n]=pick(shapes);ans=n;context=`Mitu külge on ${name}?`;expression="?";hint="Kujuta kujundit ette ja loenda selle sirged küljed.";} }
- if(topic==="life"){if(Math.random()<.5){a=rand(1,10);b=rand(1,10);ans=a+b;context=`Sul on ${a} eurot ja saad juurde ${b} eurot. Mitu eurot sul nüüd on?`;expression="? €";hint="Liida eurod kokku.";}else{a=rand(1,11);b=rand(1,12-a);ans=a+b;context=`Kell on ${a}:00. Möödub ${b} tundi. Mis kell on? Sisesta ainult tund.`;expression="?:00";hint="Liida algsele kellaajale möödunud tunnid.";} }
- if(topic==="measure"){if(grade===2){a=rand(1,9);ans=a*100;context=`Mitu sentimeetrit on ${a} meetrit?`;expression="? cm";hint="1 meeter = 100 sentimeetrit.";}else{if(Math.random()<.5){a=rand(1,15);ans=a*60;context=`Mitu minutit on ${a} tundi?`;expression="? min";hint="1 tund = 60 minutit.";}else{a=rand(1,20);ans=a*10;context=`Mitu millimeetrit on ${a} sentimeetrit?`;expression="? mm";hint="1 sentimeeter = 10 millimeetrit.";}}}
- return {ans,context,expression,hint};
+ let a,b,ans,context="",expression="",hint="",options=null;
+ if(topic==="add"){a=rand(1,max-1);b=rand(1,max-a);ans=a+b;expression=`${a} + ${b} = ?`;hint=`ALUSTA ARVUST ${a} JA LOENDA ${b} VÕRRA EDASI.`;}
+ if(topic==="sub"){a=rand(2,max);b=rand(1,a);ans=a-b;expression=`${a} − ${b} = ?`;hint=`ALUSTA ARVUST ${a} JA LOENDA ${b} VÕRRA TAGASI.`;}
+ if(topic==="mul"){a=rand(2,grade===2?5:10);b=rand(2,10);ans=a*b;expression=`${a} × ${b} = ?`;hint=`LIIDA ARVU ${a} KOKKU ${b} KORDA.`;}
+ if(topic==="div"){b=rand(2,grade===2?5:10);ans=rand(2,10);a=b*ans;expression=`${a} ÷ ${b} = ?`;hint=`MILLIST ARVU TULEB ${b}-GA KORRUTADA, ET SAADA ${a}?`;}
+ if(topic==="compare"){a=rand(0,100);b=rand(0,100);ans=a>b?1:a<b?2:3;context="SISSESTA 1, KUI ESIMENE ARV ON SUUREM; 2, KUI TEINE ARV ON SUUREM; 3, KUI ARVUD ON VÕRDSED.";expression=`${a} JA ${b}`;hint="VÕRDLE KÕIGEPEALT KÜMNELISI JA SIIS ÜHElisi.";}
+ if(topic==="story"){a=rand(2,grade===1?12:grade===2?45:150);b=rand(1,grade===1?8:grade===2?40:120);if(grade===1&&a+b>20)b=Math.max(1,20-a);const idx=otherIndex(storyTemplates.length,lastStory);lastStory=idx;const s=storyTemplates[idx](a,b);ans=s.ans;context=s.context;expression="?";hint=s.hint;}
+ if(topic==="shape"){if(grade===3){a=rand(2,15);b=rand(2,15);ans=2*(a+b);context=`RISTKÜLIKU PIKKUS ON ${a} CM JA LAIUS ${b} CM. LEIA ÜMBERMÕÕT SENTIMEETRITES.`;expression="? CM";hint="LIIDA KOKKU KÕIK NELI KÜLGE.";}else{const shapes=[["KOLMNURGAl",3],["RUUDUL",4],["RISTKÜLIKUL",4],["VIISNURGAL",5]];const [name,n]=pick(shapes);ans=n;context=`MITU KÜLGE ON ${name}?`;expression="?";hint="LOENDA KUJUNDI SIRGED KÜLJED.";}}
+ if(topic==="life"){if(Math.random()<.5){a=rand(1,10);b=rand(1,10);ans=a+b;context=`SUL ON ${a} EUROT JA SAAD JUURDE ${b} EUROT. MITU EUROT SUL NÜÜD ON?`;expression="? €";hint="LIIDA EUROD KOKKU.";}else{a=rand(1,11);b=rand(1,12-a);ans=a+b;context=`KELL ON ${a}:00. MÖÖDUB ${b} TUNDI. MIS KELL ON? SISESTA AINULT TUND.`;expression="?:00";hint="LIIDA ALGSELE KELLAAJALE MÖÖDUNUD TUNNID.";}}
+ if(topic==="measure"){if(grade===2){a=rand(1,9);ans=a*100;context=`MITU SENTIMEETRIT ON ${a} MEETRIT?`;expression="? CM";hint="1 MEETER = 100 SENTIMEETRIT.";}else{if(Math.random()<.5){a=rand(1,15);ans=a*60;context=`MITU MINUTIT ON ${a} TUNDI?`;expression="? MIN";hint="1 TUND = 60 MINUTIT.";}else{a=rand(1,20);ans=a*10;context=`MITU MILLIMEETRIT ON ${a} SENTIMEETRIT?`;expression="? MM";hint="1 SENTIMEETER = 10 MILLIMEETRIT.";}}}
+ if(topic==="letters"){const alphabet=["A","E","I","O","U","Õ","Ä","Ö","Ü"];const letter=pick(alphabet);ans=letter;context="VALI TÄHT, MIDA NÄED.";expression=letter;options=[letter,...alphabet.filter(x=>x!==letter).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);hint=`SEE ON TÄHT ${letter}.`;}
+ if(topic==="syllables"){const words=readingWords.filter(x=>x[2].includes("-"));const w=pick(words);ans=w[2];context=`KUIDAS SILBITADA SÕNA ${w[0]}?`;expression=w[0];options=[ans,w[0].split("").join("-"),w[0],w[0].slice(0,1)+"-"+w[0].slice(1)].filter((v,i,arr)=>arr.indexOf(v)===i);hint=`ÜTLE SÕNA ${w[0]} AEGLASELT JA KUULA SILPE.`;}
+ if(topic==="readwords"){const idx=otherIndex(readingWords.length,lastReading);lastReading=idx;const w=readingWords[idx];ans=w[0];context="LOE SÕNAD JA VALI PILDIGA SOBIV SÕNA.";expression=w[1];options=[w[0],...readingWords.filter(x=>x[0]!==w[0]).sort(()=>Math.random()-.5).slice(0,3).map(x=>x[0])].sort(()=>Math.random()-.5);hint=`PILDIL ON ${w[0]}. PROOVI SÕNA HÄÄLIKHAAVAL LUGEDA.`;}
+ if(topic==="readsentences"){const [sentence,ask,choices,right]=pick(sentenceTasks);context=sentence+" "+ask;expression="📖";options=choices.sort(()=>Math.random()-.5);ans=right;hint="LOE LAUSE VEEL KORD AEGLASELT. OTSI VASTUS LAUSEST.";}
+ if(topic==="missing"){const w=pick(readingWords.filter(x=>x[0].length>=4));const i=rand(1,w[0].length-2);ans=w[0][i];context=`MIS TÄHT ON SÕNAST PUUDU? ${w[1]}`;expression=w[0].slice(0,i)+" _ "+w[0].slice(i+1);const alphabet=["A","E","I","O","U","Õ","Ä","Ö","Ü","K","L","M","N","R","S","T","P"];options=[ans,...alphabet.filter(x=>x!==ans).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);hint=`MÕTLE SÕNALE ${w[0]}. ÜTLE SEE AEGLASELT.`;}
+ if(topic==="language"){const tasks=[
+["VALI SÕNA, MIS TÄHISTAB LOOMA.",["KASS","LAUD","MAJA","AUTO"],"KASS"],
+["VALI SÕNA, MIS TÄHISTAB VÄRVI.",["SININE","JOOKSEB","KOER","RAAMAT"],"SININE"],
+["VALI TEGUSÕNA.",["HÜPPAB","PALL","PUNANE","KASS"],"HÜPPAB"],
+["VALI SÕNA, MIS TÄHISTAB ESET.",["TOOL","NAERAB","ROHELINE","KIIRESTI"],"TOOL"],
+["VALI ÕIGESTI KIRJUTATUD SÕNA.",["RAAMAT","RAMAT","RAAMT","RAAMAD"],"RAAMAT"],
+["VALI SÕNA, MIS TÄHISTAB TAIME.",["LILL","KOER","AUTO","KIVI"],"LILL"]
+];const [ask,choices,right]=pick(tasks);context=ask;expression="✏️";ans=right;options=choices.sort(()=>Math.random()-.5);hint="LOE KÕIK VASTUSEVARIANDID LÄBI.";}
+ return {ans,context,expression,hint,options};
 }
-function newQuestion(){question=generate();solved=false;wrongTried=false;$("context").textContent=question.context;$("expression").textContent=question.expression;$("answer").value="";$("answer").disabled=false;$("check").disabled=false;$("feedback").textContent="";$("feedback").className="feedback";$("hintBox").textContent=question.hint;$("hintBox").classList.add("hidden");renderStats();$("answer").focus();}
-$("answerForm").addEventListener("submit",e=>{e.preventDefault();if(solved)return;const v=Number($("answer").value.replace(",","."));if($("answer").value.trim()===""||!Number.isFinite(v))return;
-if(v===question.ans){solved=true;const s=stats();s.attempts++;if(!wrongTried)s.correct++;save(s);renderStats();$("feedback").textContent=wrongTried?"Tubli, said õige vastuse! 🌟":"Õige vastus! Suurepärane! 🌟";$("feedback").className="feedback good";$("answer").disabled=true;$("check").disabled=true;}
-else{wrongTried=true;$("feedback").textContent="Proovi veel! Sa saad hakkama. 💛";$("feedback").className="feedback retry";$("answer").select();}});
+function newQuestion(){
+ question=generate();solved=false;wrongTried=false;
+ $("context").textContent=question.context;$("expression").textContent=question.expression;
+ $("answer").value="";$("answer").disabled=false;$("check").disabled=false;
+ $("feedback").textContent="";$("feedback").className="feedback";
+ $("hintBox").textContent=question.hint;$("hintBox").classList.add("hidden");
+ $("choices").innerHTML="";
+ const hasChoices=!!question.options;
+ $("choices").classList.toggle("hidden",!hasChoices);
+ $("answerForm").classList.toggle("hidden",hasChoices);
+ if(hasChoices){question.options.forEach(opt=>{const btn=document.createElement("button");btn.className="choice";btn.type="button";btn.textContent=opt;btn.addEventListener("click",()=>checkAnswer(opt));$("choices").append(btn);});}
+ renderStats();if(!hasChoices)$("answer").focus();
+}
+function checkAnswer(value){
+ if(solved)return;
+ const ok=String(value).toLocaleUpperCase("et-EE")===String(question.ans).toLocaleUpperCase("et-EE");
+ if(ok){
+ solved=true;const s=stats();s.attempts++;if(!wrongTried)s.correct++;save(s);renderStats();
+ $("feedback").textContent=wrongTried?"TUBLI, SAID ÕIGE VASTUSE! 🌟":"ÕIGE VASTUS! SUUREPÄRANE! 🌟";
+ $("feedback").className="feedback good";$("answer").disabled=true;$("check").disabled=true;
+ $("choices").querySelectorAll("button").forEach(b=>b.disabled=true);
+ }else{wrongTried=true;$("feedback").textContent="PROOVI VEEL! SA SAAD HAKKAMA. 💛";$("feedback").className="feedback retry";$("answer").select();}
+}
+$("answerForm").addEventListener("submit",e=>{e.preventDefault();const raw=$("answer").value.trim();if(raw==="")return;checkAnswer(Number(raw.replace(",",".")));});
 $("hintBtn").addEventListener("click",()=>$("hintBox").classList.toggle("hidden"));
 $("nextBtn").addEventListener("click",()=>{if(!solved){const s=stats();s.attempts++;save(s);}newQuestion();});
 $("backHome").addEventListener("click",()=>show("home"));
