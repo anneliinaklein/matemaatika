@@ -37,6 +37,13 @@ body.grade-one input{text-transform:uppercase}
 .choice:hover{border-color:#7051d4}
 .compare-choice{font-size:2.5rem;min-height:85px;font-weight:900;background:#e8f5ff;color:#244c85}
 @media(max-width:480px){.choices{grid-template-columns:1fr}}
+
+.number-pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-width:330px;margin:0 auto 14px}
+.number-pad button{background:#e9f5ff;border:2px solid #c8defb;color:#234c87;font-size:1.65rem;min-height:58px;padding:8px}
+.number-pad button:active{background:#c9e4ff}
+.number-pad .pad-delete{background:#ffe9e8;color:#a33c40}
+.number-pad .pad-clear{background:#fff4d6;color:#866018}
+@media(max-width:480px){.number-pad{max-width:100%}}
 </style>
 </head>
 <body><main>
@@ -47,7 +54,7 @@ body.grade-one input{text-transform:uppercase}
 <section id="reading" class="panel hidden"><div class="topbar"><button class="back" id="readingBack">← TEEMADE JUURDE</button><span class="pill">1. KLASS · LUGEMISRADA</span></div><h2 style="margin-top:20px">Õpime lugema! 📚</h2><p class="muted">ALUSTA TÄHTEDEST JA LIIGU SAMMHAAVAL LÜHIKESTE JUTTUDE JUURDE. VÕID ALATI UUESTI HARJUTADA.</p><div id="readingSteps" class="grid"></div></section>
 <section id="exercise" class="panel hidden"><div class="topbar"><button class="back" id="backTopics">← Teemade juurde</button><span class="pill" id="exerciseBadge"></span></div>
 <div class="problem"><div class="context" id="context"></div><div class="expression" id="expression"></div></div>
-<div id="choices" class="choices hidden"></div><form id="answerForm" class="answerline"><input id="answer" type="number" step="any" inputmode="decimal" autocomplete="off" aria-label="Sinu vastus" placeholder="Sinu vastus" required><button class="primary" id="check" type="submit">Kontrolli ✓</button></form>
+<div id="choices" class="choices hidden"></div><div id="numberPad" class="number-pad hidden" aria-label="Numbrinupud"></div><form id="answerForm" class="answerline"><input id="answer" type="text" inputmode="none" readonly autocomplete="off" aria-label="Sinu vastus" placeholder="Sinu vastus" required><button class="primary" id="check" type="submit">Kontrolli ✓</button></form>
 <div class="feedback" id="feedback" aria-live="polite"></div><div id="hintBox" class="hint hidden"></div>
 <div class="actions"><button class="secondary" id="hintBtn" type="button">💡 Näita vihjet</button><button class="secondary" id="nextBtn" type="button">Järgmine ülesanne →</button></div>
 <div class="stats" style="margin-top:20px"><span class="stat">⭐ Õigesti: <span id="correct">0</span></span><span class="stat">📘 Lahendatud: <span id="attempts">0</span></span></div>
@@ -187,8 +194,21 @@ function generate(){
  if(topic==="sub"){a=rand(2,max);b=rand(1,a);ans=a-b;expression=`${a} − ${b} = ?`;hint=`ALUSTA ARVUST ${a} JA LOENDA ${b} VÕRRA TAGASI.`;}
  if(topic==="mul"){a=rand(2,grade===2?5:10);b=rand(2,10);ans=a*b;expression=`${a} × ${b} = ?`;hint=`LIIDA ARVU ${a} KOKKU ${b} KORDA.`;}
  if(topic==="div"){b=rand(2,grade===2?5:10);ans=rand(2,10);a=b*ans;expression=`${a} ÷ ${b} = ?`;hint=`MILLIST ARVU TULEB ${b}-GA KORRUTADA, ET SAADA ${a}?`;}
- if(topic==="compare"){a=rand(0,100);b=rand(0,100);ans=a>b?">":a<b?"<":"=";context="VALI ÕIGE VÕRDLUSMÄRK.";expression=`${a}   ?   ${b}`;options=["<","=",">"];hint="SUUREM ARV ON MÄRGI AVATUD POOLEL. VÕRDSETE ARVUDE KORRAL VALI =.";}
+ if(grade===3&&topic==="add"&&Math.random()<.55){a=rand(120,780);b=rand(25,980-a);ans=a+b;expression=`${a} + ${b} = ?`;hint="Liida esmalt ühelised, siis kümnelised ja sajalised. Jälgi ülekannet.";}
+ if(grade===3&&topic==="sub"&&Math.random()<.55){a=rand(300,999);b=rand(120,a-1);ans=a-b;expression=`${a} − ${b} = ?`;hint="Lahuta ühelised, kümnelised ja sajalised. Vajadusel laena.";}
+ if(grade===3&&topic==="mul"&&Math.random()<.6){a=rand(11,39);b=rand(2,9);ans=a*b;expression=`${a} × ${b} = ?`;hint=`Jaota ${a} kümnelisteks ja ühelisteks ning korruta mõlemad ${b}-ga.`;}
+ if(grade===3&&topic==="div"&&Math.random()<.6){b=rand(3,9);ans=rand(11,29);a=b*ans;expression=`${a} ÷ ${b} = ?`;hint=`Mõtle, mitu korda mahub ${b} arvu ${a} sisse.`;}
+ if(topic==="compare"){a=rand(0,100);b=Math.random()<.25?a:rand(0,100);ans=a>b?">":a<b?"<":"=";context="VALI ÕIGE VÕRDLUSMÄRK.";expression=`${a}   ?   ${b}`;options=["<","=",">"];hint="SUUREM ARV ON MÄRGI AVATUD POOLEL. VÕRDSETE ARVUDE KORRAL VALI =.";}
  if(topic==="story"){a=rand(2,grade===1?12:grade===2?45:150);b=rand(1,grade===1?8:grade===2?40:120);if(grade===1&&a+b>20)b=Math.max(1,20-a);const idx=otherIndex(storyTemplates.length,lastStory);lastStory=idx;const s=storyTemplates[idx](a,b);ans=s.ans;context=s.context;expression="?";hint=s.hint;}
+ if(grade===3&&topic==="story"){
+  const types=[
+   ()=>{const boxes=rand(3,8),each=rand(6,12),given=rand(3,each-1);return {context:`Raamatukogusse toodi ${boxes} kasti. Igas kastis oli ${each} raamatut. ${given} raamatut laenutati kohe välja. Mitu raamatut jäi alles?`,ans:boxes*each-given,hint:"Kõigepealt korruta kastide arv raamatute arvuga, seejärel lahuta laenutatud raamatud."};},
+   ()=>{const total=rand(70,160),day1=rand(12,35),day2=rand(12,35);return {context:`Matkarajal on ${total} meetrit. Jüri kõndis hommikul ${day1} meetrit ja õhtul ${day2} meetrit. Mitu meetrit jäi veel kõndida?`,ans:total-day1-day2,hint:"Liida läbitud vahemaad ja lahuta kogupikkusest."};},
+   ()=>{const each=rand(7,15),groups=rand(4,9),extra=rand(10,40);return {context:`Koolis istutati ${groups} rida lilli. Igas reas oli ${each} lille. Lisaks istutati veel ${extra} lille. Mitu lille istutati kokku?`,ans:groups*each+extra,hint:"Korruta ridade arv ühe rea lillede arvuga ja liida lisaks istutatud lilled."};},
+   ()=>{const total=rand(4,9)*12,per=rand(2,4),given=rand(3,12);return {context:`Spordipäevaks osteti ${total} joogipudelit. Iga võistkond sai ${per} pudelit. Kui palju pudeleid jäi alles pärast ${given} võistkonna varustamist?`,ans:total-per*given,hint:"Korruta võistkondade arv pudelite arvuga ja lahuta ostetud kogusest."};}
+  ];
+  const t=pick(types)();context=t.context;ans=t.ans;expression="?";hint=t.hint;
+ }
  if(topic==="shape"){if(grade===3){a=rand(2,15);b=rand(2,15);ans=2*(a+b);context=`RISTKÜLIKU PIKKUS ON ${a} CM JA LAIUS ${b} CM. LEIA ÜMBERMÕÕT SENTIMEETRITES.`;expression="? CM";hint="LIIDA KOKKU KÕIK NELI KÜLGE.";}else{const shapes=[["KOLMNURGAl",3],["RUUDUL",4],["RISTKÜLIKUL",4],["VIISNURGAL",5]];const [name,n]=pick(shapes);ans=n;context=`MITU KÜLGE ON ${name}?`;expression="?";hint="LOENDA KUJUNDI SIRGED KÜLJED.";}}
  if(topic==="life"){if(Math.random()<.5){a=rand(1,10);b=rand(1,10);ans=a+b;context=`SUL ON ${a} EUROT JA SAAD JUURDE ${b} EUROT. MITU EUROT SUL NÜÜD ON?`;expression="? €";hint="LIIDA EUROD KOKKU.";}else{a=rand(1,11);b=rand(1,12-a);ans=a+b;context=`KELL ON ${a}:00. MÖÖDUB ${b} TUNDI. MIS KELL ON? SISESTA AINULT TUND.`;expression="?:00";hint="LIIDA ALGSELE KELLAAJALE MÖÖDUNUD TUNNID.";}}
  if(topic==="measure"){if(grade===2){a=rand(1,9);ans=a*100;context=`MITU SENTIMEETRIT ON ${a} MEETRIT?`;expression="? CM";hint="1 MEETER = 100 SENTIMEETRIT.";}else{if(Math.random()<.5){a=rand(1,15);ans=a*60;context=`MITU MINUTIT ON ${a} TUNDI?`;expression="? MIN";hint="1 TUND = 60 MINUTIT.";}else{a=rand(1,20);ans=a*10;context=`MITU MILLIMEETRIT ON ${a} SENTIMEETRIT?`;expression="? MM";hint="1 SENTIMEETER = 10 MILLIMEETRIT.";}}}
@@ -305,10 +325,11 @@ function newQuestion(){
  $("hintBox").textContent=question.hint;$("hintBox").classList.add("hidden");
  $("choices").innerHTML="";
  const hasChoices=!!question.options;
+ $("numberPad").classList.toggle("hidden",hasChoices);
  $("choices").classList.toggle("hidden",!hasChoices);
  $("answerForm").classList.toggle("hidden",hasChoices);
  if(hasChoices){question.options.forEach(opt=>{const btn=document.createElement("button");btn.className="choice"+(topic==="compare"?" compare-choice":"");btn.type="button";btn.textContent=opt;btn.addEventListener("click",()=>checkAnswer(opt));$("choices").append(btn);});}
- renderStats();if(!hasChoices)$("answer").focus();
+ renderStats();
 }
 function checkAnswer(value){
  if(solved)return;
@@ -318,14 +339,35 @@ function checkAnswer(value){
  $("feedback").textContent=wrongTried?"TUBLI, SAID ÕIGE VASTUSE! 🌟":"ÕIGE VASTUS! SUUREPÄRANE! 🌟";
  $("feedback").className="feedback good";$("answer").disabled=true;$("check").disabled=true;
  $("choices").querySelectorAll("button").forEach(b=>b.disabled=true);
- }else{wrongTried=true;$("feedback").textContent="PROOVI VEEL! SA SAAD HAKKAMA. 💛";$("feedback").className="feedback retry";$("answer").select();}
+ }else{wrongTried=true;$("feedback").textContent="PROOVI VEEL! SA SAAD HAKKAMA. 💛";$("feedback").className="feedback retry";}
 }
-$("answerForm").addEventListener("submit",e=>{e.preventDefault();const raw=$("answer").value.trim();if(raw==="")return;checkAnswer(Number(raw.replace(",",".")));});
+$("answerForm").addEventListener("submit",e=>{e.preventDefault();const raw=$("answer").value.trim();if(raw===""||raw==="-")return;checkAnswer(Number(raw.replace(",",".")));});
+
+function buildNumberPad(){
+ const pad=$("numberPad");
+ const keys=["1","2","3","4","5","6","7","8","9","C","0","⌫"];
+ keys.forEach(k=>{
+  const btn=document.createElement("button");
+  btn.type="button";btn.textContent=k;
+  if(k==="C")btn.classList.add("pad-clear");
+  if(k==="⌫")btn.classList.add("pad-delete");
+  btn.setAttribute("aria-label",k==="C"?"Kustuta kogu vastus":k==="⌫"?"Kustuta viimane number":"Sisesta "+k);
+  btn.addEventListener("click",()=>{
+   if(solved)return;
+   const input=$("answer");
+   if(k==="C")input.value="";
+   else if(k==="⌫")input.value=input.value.slice(0,-1);
+   else if(input.value.length<8)input.value+=k;
+  });
+  pad.append(btn);
+ });
+}
+buildNumberPad();
 $("hintBtn").addEventListener("click",()=>$("hintBox").classList.toggle("hidden"));
 $("nextBtn").addEventListener("click",()=>{if(!solved){const s=stats();s.attempts++;save(s);}if(topic.startsWith("path"))readingPosition++;newQuestion();});
 $("subjectsBack").addEventListener("click",()=>show("home"));
 $("backHome").addEventListener("click",()=>show("subjects"));
 $("backTopics").addEventListener("click",()=>{if(topic.startsWith("path")){renderReadingSteps();show("reading");}else show("topics");});
 $("readingBack").addEventListener("click",()=>show("topics"));
-[1,2,3].forEach((g)=>{const b=document.createElement("button");b.className="grade";b.innerHTML=`<span class="emoji">${["","🧸","🚀","🌈"][g]}</span><strong>${g}. klass</strong><span>${["","Avastan arve ja kujundeid","Harjutan uusi tehteid","Lahendan põnevaid ülesandeid"][g]}</span>`;b.addEventListener("click",()=>selectGrade(g));$("grades").append(b);});
+[1,2,3].forEach((g)=>{const b=document.createElement("button");b.className="grade";b.innerHTML=`<span class="emoji">${["","🧸","🚀","🌈"][g]}</span><strong>${g}. klass</strong><span>${["","Avastan ja õpin mängides","Õpin iga päev midagi uut","Avastan uusi teadmisi"][g]}</span>`;b.addEventListener("click",()=>selectGrade(g));$("grades").append(b);});
 </script></body></html>
