@@ -29,9 +29,15 @@ input{font:inherit;width:100%;min-width:0;border:2px solid #d9d4ed;border-radius
 @media(max-width:650px){.grid{grid-template-columns:1fr}.grade{min-height:115px}.panel{padding:18px}.answerline{flex-direction:column}.brand{letter-spacing:-.04em}}
 
 /* Ka JavaScriptiga loodud tekstid kuvatakse läbivalt suurtähtedega. */
-#home{text-transform:uppercase}
-body.grade-one{text-transform:uppercase}
-body.grade-one input{text-transform:uppercase}
+/* Avaleht on alati suurtähtedes. 1. klassis ka kõik nupud,
+   küsimused, valikvastused, vihjed ja dünaamiliselt lisatud tekstid. */
+#home, #home *,
+body.grade-one #subjects, body.grade-one #subjects *,
+body.grade-one #topics, body.grade-one #topics *,
+body.grade-one #exercise, body.grade-one #exercise *,
+body.grade-one #reading, body.grade-one #reading * {
+  text-transform: uppercase !important;
+}
 .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:550px;margin:15px auto}
 .choice{background:#eeeaff;color:#42327b;font-size:1.3rem;border:2px solid #d6cafb}
 .choice:hover{border-color:#7051d4}
