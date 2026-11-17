@@ -1,10 +1,87 @@
-<!doctype html><html lang="et"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matemaatikamaa</title><style>:root{font-family:system-ui,sans-serif;color:#18304c;background:#eef5ff}*{box-sizing:border-box}body{margin:0;padding:24px}.app{max-width:720px;margin:auto}header{text-align:center}h1{font-size:clamp(2rem,6vw,3rem);margin-bottom:0}header p{color:#58708b}.panel{background:white;border-radius:22px;padding:24px;margin:18px 0;box-shadow:0 8px 25px #254a8012}.controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}label{display:grid;gap:6px;font-weight:650}select,input,button{font:inherit;border-radius:12px;padding:12px;border:1px solid #cad8e8}button{background:#3069d6;color:white;border:0;cursor:pointer;font-weight:700}button.secondary{background:#e5edfc;color:#234c9c}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffbf47}button:disabled{opacity:.5}.question{text-align:center;font-size:clamp(2.5rem,8vw,4rem);font-weight:800;margin:20px 0}.answer{display:flex;gap:10px}.answer input{width:100%;min-width:0}.answer button{white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stat{background:#f1f6ff;padding:14px 4px;border-radius:12px}.stat strong{display:block;font-size:1.5rem}.status{min-height:30px;text-align:center;font-weight:700}.success{color:#147744}.error{color:#b43b35}.footer{text-align:center;color:#667b91;font-size:.9rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}@media(max-width:500px){body{padding:12px}.panel{padding:17px}.controls{grid-template-columns:1fr}.answer{flex-direction:column}}</style></head><body><main class="app"><header><h1>🌈 Matemaatikamaa</h1><p>Arvutamine võib olla lõbus! 1.–3. klassile</p></header><section class="panel"><div class="controls"><label>Klass<select id="grade"><option value="1">1. klass</option><option value="2">2. klass</option><option value="3">3. klass</option></select></label><label>Tehted<select id="operation"><option value="mix">Segatehted</option><option value="add">Liitmine</option><option value="sub">Lahutamine</option><option value="mul">Korrutamine</option><option value="div">Jagamine</option></select></label><label>Raskusaste<select id="difficulty"><option value="easy">Kerge</option><option value="medium">Keskmine</option><option value="hard">Raske</option></select></label><label>Režiim<select id="mode"><option value="practice">Harjutamine</option><option value="60">1 minut</option><option value="180">3 minutit</option><option value="300">5 minutit</option></select></label></div><div class="actions"><button id="start">Alusta uut mängu</button><button id="reset" class="secondary">Kustuta salvestatud parim tulemus</button></div></section><section class="panel" id="game" hidden><div class="stats"><div class="stat"><strong id="correct">0</strong>Õigeid</div><div class="stat"><strong id="wrong">0</strong>Valesid</div><div class="stat"><strong id="time">∞</strong>Aega</div></div><div class="question" id="question" aria-live="polite"></div><form class="answer" id="form"><input id="answer" type="number" inputmode="numeric" autocomplete="off" aria-label="Sinu vastus" required><button id="submit">Vasta</button></form><p class="status" id="status" role="status" aria-live="polite"></p><p id="best"></p></section><p class="footer">Tulemused salvestatakse ainult selles brauseris. Isikuandmeid ei koguta.</p></main><script>
-const $=id=>document.getElementById(id);let state=null,timer=null;const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;const bestKey=()=>`matemaatikamaa-best-${$('grade').value}-${$('operation').value}-${$('difficulty').value}-${$('mode').value}`;
-function makeQuestion(){const grade=+$('grade').value,level=$('difficulty').value,opSetting=$('operation').value;const ops=opSetting==='mix'?(grade===1?['add','sub']:['add','sub','mul','div']):[opSetting];const op=ops[rand(0,ops.length-1)];const max=grade===1?({easy:10,medium:20,hard:50})[level]:grade===2?({easy:20,medium:100,hard:200})[level]:({easy:100,medium:500,hard:1000})[level];let a,b,result; if(op==='add'){a=rand(0,max);b=rand(0,max-a);result=a+b}else if(op==='sub'){a=rand(0,max);b=rand(0,a);result=a-b}else if(op==='mul'){const limit=grade===1?5:grade===2?10:12;const factor=level==='easy'?5:level==='medium'?10:limit;a=rand(1,Math.min(limit,factor));b=rand(1,Math.min(limit,factor));result=a*b}else{const limit=grade===1?5:grade===2?10:12;const factor=level==='easy'?5:level==='medium'?10:limit;b=rand(1,Math.min(limit,factor));result=rand(1,Math.min(limit,factor));a=b*result}return {a,b,op,result}}
-function display(){if(!state)return;const symbols={add:'+',sub:'−',mul:'×',div:'÷'};const q=state.question;$('question').textContent=`${q.a} ${symbols[q.op]} ${q.b} = ?`;$('correct').textContent=state.correct;$('wrong').textContent=state.wrong;$('time').textContent=state.remaining===null?'∞':`${state.remaining} s`;$('answer').value='';$('answer').focus();$('best').textContent='Varasem parim tulemus: '+(localStorage.getItem(bestKey())??'puudub')}
-function endGame(){if(!state||state.finished)return;state.finished=true;clearInterval(timer);$('answer').disabled=true;$('submit').disabled=true;const score=state.correct;const prev=Number(localStorage.getItem(bestKey())??-1);if(score>prev)localStorage.setItem(bestKey(),String(score));$('status').className='status success';$('status').textContent=`Mäng läbi! Õigeid: ${score}, valesid: ${state.wrong}.`;displaySummary()}
-function displaySummary(){$('correct').textContent=state.correct;$('wrong').textContent=state.wrong;$('time').textContent=state.remaining===null?'∞':`${state.remaining} s`;$('question').textContent='🎉 Tubli töö!';$('best').textContent='Sinu parim tulemus selles režiimis: '+localStorage.getItem(bestKey())}
-$('start').addEventListener('click',()=>{clearInterval(timer);const seconds=$('mode').value==='practice'?null:Number($('mode').value);state={correct:0,wrong:0,remaining:seconds,finished:false,question:makeQuestion()};$('game').hidden=false;$('answer').disabled=false;$('submit').disabled=false;$('status').textContent='';display();if(seconds!==null){timer=setInterval(()=>{if(!state||state.finished)return;state.remaining--;if(state.remaining<=0)endGame();else $('time').textContent=state.remaining+' s'},1000)}});
-$('form').addEventListener('submit',e=>{e.preventDefault();if(!state||state.finished)return;const value=$('answer').value;if(value.trim()==='')return;const ok=Number(value)===state.question.result;if(ok)state.correct++;else state.wrong++;$('status').className='status '+(ok?'success':'error');$('status').textContent=ok?'Õige! 🌟':`Õige vastus oli ${state.question.result}.`;state.question=makeQuestion();display()});
-$('reset').addEventListener('click',()=>{localStorage.removeItem(bestKey());$('best').textContent='Varasem parim tulemus: puudub'});
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#7657d8">
+<title>Matemaatikamaa – õpi omas tempos</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#24334f;background:#f7f5ff}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 8% 6%,#fff0b8 0,transparent 28%),radial-gradient(circle at 95% 4%,#d8eaff 0,transparent 32%),#f7f5ff;min-height:100vh}
+main{max-width:1040px;margin:auto;padding:22px 18px 60px}header{text-align:center;padding:20px 0 12px}
+.brand{font-size:clamp(2.3rem,6vw,4rem);font-weight:900;letter-spacing:-.06em;color:#6346bc;margin:0}
+.subtitle{color:#64718a;font-size:1.1rem;margin:7px 0}.pill{display:inline-block;background:#fff;border:1px solid #e6defd;border-radius:99px;padding:7px 15px;color:#7559ba;font-weight:750;font-size:.85rem}
+.panel{background:white;border:1px solid #e9e7f4;border-radius:26px;padding:26px;box-shadow:0 12px 36px #5e5c9c12;margin-top:22px}
+h2{font-size:1.55rem;margin:0 0 8px}p{line-height:1.5}.muted{color:#66748c}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
+button{font:inherit;cursor:pointer;border:0;border-radius:17px;padding:14px 18px;font-weight:800;transition:transform .12s,box-shadow .12s}button:hover{transform:translateY(-2px)}button:focus-visible,input:focus-visible{outline:3px solid #f4b942;outline-offset:3px}
+.grade{min-height:185px;text-align:left;color:#26354f;background:#f2edff;border:2px solid transparent;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.grade:nth-child(2){background:#e6f8f3}.grade:nth-child(3){background:#fff2e5}.grade .emoji{font-size:2.6rem}.grade strong{font-size:1.45rem}.grade span:last-child{font-weight:500;font-size:.9rem;color:#5d6c82}
+.grade:hover,.topic:hover{border-color:#9477e9;box-shadow:0 8px 22px #6c4bbd1b}
+.topic{background:#fff;border:2px solid #e9e5f6;min-height:145px;text-align:left;display:flex;flex-direction:column;gap:9px}.topic .emoji{font-size:2rem}.topic small{color:#64718a;font-weight:500;line-height:1.4}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.back{background:#ede8ff;color:#6144b7;padding:11px 15px}.primary{background:#7353d7;color:white}.secondary{background:#edf3ff;color:#3456a5}.hint{background:#fff5d9;border:1px solid #f4d891;border-radius:15px;padding:15px;margin-top:14px}
+.problem{text-align:center;background:#f8f6ff;border-radius:22px;padding:30px 16px;margin:20px 0}.problem .expression{font-size:clamp(2rem,6vw,3.5rem);font-weight:900;white-space:pre-line;line-height:1.3}
+.problem .context{font-size:1.1rem;max-width:650px;margin:0 auto 14px;line-height:1.6}
+.answerline{display:flex;justify-content:center;gap:10px;max-width:440px;margin:0 auto}
+input{font:inherit;width:100%;min-width:0;border:2px solid #d9d4ed;border-radius:14px;padding:14px;font-size:1.3rem;text-align:center}
+.feedback{text-align:center;min-height:30px;font-weight:800;margin-top:16px}.good{color:#16865c}.retry{color:#a45c18}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.stat{background:#f3f0ff;border-radius:12px;padding:10px 15px;font-weight:700}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.hidden{display:none!important}footer{text-align:center;color:#7a849a;margin-top:30px;font-size:.86rem}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.grade{min-height:115px}.panel{padding:18px}.answerline{flex-direction:column}.brand{letter-spacing:-.04em}}
+</style>
+</head>
+<body><main>
+<header><span class="pill">🌟 Õpime rõõmuga!</span><h1 class="brand">Matemaatikamaa</h1><p class="subtitle">Matemaatika 1.–3. klassile • Õpi omas tempos</p></header>
+<section id="home" class="panel"><h2>Millises klassis sa õpid? 🎒</h2><p class="muted">Vali oma klass ja avasta põnevaid matemaatikaülesandeid!</p><div class="grid" id="grades"></div></section>
+<section id="topics" class="panel hidden"><div class="topbar"><button class="back" id="backHome">← Klasside juurde</button><span class="pill" id="gradeBadge"></span></div><h2 style="margin-top:20px">Mida täna harjutame?</h2><p class="muted">Vali teema. Kiirustama ei pea!</p><div class="grid" id="topicGrid"></div></section>
+<section id="exercise" class="panel hidden"><div class="topbar"><button class="back" id="backTopics">← Teemade juurde</button><span class="pill" id="exerciseBadge"></span></div>
+<div class="problem"><div class="context" id="context"></div><div class="expression" id="expression"></div></div>
+<form id="answerForm" class="answerline"><input id="answer" type="number" step="any" inputmode="decimal" autocomplete="off" aria-label="Sinu vastus" placeholder="Sinu vastus" required><button class="primary" id="check" type="submit">Kontrolli ✓</button></form>
+<div class="feedback" id="feedback" aria-live="polite"></div><div id="hintBox" class="hint hidden"></div>
+<div class="actions"><button class="secondary" id="hintBtn" type="button">💡 Näita vihjet</button><button class="secondary" id="nextBtn" type="button">Järgmine ülesanne →</button></div>
+<div class="stats" style="margin-top:20px"><span class="stat">⭐ Õigesti: <span id="correct">0</span></span><span class="stat">📘 Lahendatud: <span id="attempts">0</span></span></div>
+<p class="muted" style="text-align:center;font-size:.85rem">Tulemused salvestatakse ainult selles seadmes. Võistlust ega ajapiirangut ei ole.</p>
+</section>
+<footer>💜 Matemaatikamaa • Iga samm loeb!</footer>
+</main>
+<script>
+"use strict";
+const catalog={
+1:[["➕","Liitmine","Liidame 20 piires","add"],["➖","Lahutamine","Lahutame 20 piires","sub"],["🔢","Arvude võrdlemine","Suurem ja väiksem","compare"],["🧩","Tekstülesanded","Arvutame koos","story"],["📐","Geomeetria","Kujundid ja nurgad","shape"],["🕒","Kell ja raha","Tunnid ja eurod","life"]],
+2:[["➕","Liitmine","Liidame 100 piires","add"],["➖","Lahutamine","Lahutame 100 piires","sub"],["✖️","Korrutamine","Korrutustabeli algus","mul"],["➗","Jagamine","Jagame võrdseteks osadeks","div"],["🧩","Tekstülesanded","Mõtle ja arvuta","story"],["📏","Mõõtühikud","Sentimeetrid ja meetrid","measure"]],
+3:[["➕","Liitmine","Liidame 1000 piires","add"],["➖","Lahutamine","Lahutame 1000 piires","sub"],["✖️","Korrutamine","Korrutustabel","mul"],["➗","Jagamine","Jagame täpselt","div"],["🧩","Tekstülesanded","Mitme sammuga ülesanded","story"],["📐","Geomeetria","Ümbermõõt ja kujundid","shape"],["📏","Mõõtühikud","Pikkus ja aeg","measure"]],
+};
+const $=id=>document.getElementById(id);
+let grade=1,topic="add",question=null,solved=false,wrongTried=false;
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[rand(0,a.length-1)];
+function show(id){["home","topics","exercise"].forEach(k=>$(k).classList.toggle("hidden",k!==id));window.scrollTo({top:0,behavior:"smooth"});}
+function key(){return `matemaatikamaa-v2-${grade}-${topic}`;}
+function stats(){try{return JSON.parse(localStorage.getItem(key()))||{correct:0,attempts:0};}catch{return {correct:0,attempts:0};}}
+function save(s){try{localStorage.setItem(key(),JSON.stringify(s));}catch{}}
+function renderStats(){const s=stats();$("correct").textContent=s.correct;$("attempts").textContent=s.attempts;}
+function selectGrade(g){grade=g;$("gradeBadge").textContent=g+". klass";$("topicGrid").innerHTML="";catalog[g].forEach(([emoji,title,desc,id])=>{const b=document.createElement("button");b.className="topic";b.innerHTML=`<span class="emoji">${emoji}</span><strong>${title}</strong><small>${desc}</small>`;b.addEventListener("click",()=>selectTopic(id,title));$("topicGrid").append(b);});show("topics");}
+function selectTopic(id,title){topic=id;$("exerciseBadge").textContent=grade+". klass · "+title;newQuestion();show("exercise");}
+function generate(){
+ const max=grade===1?20:grade===2?100:1000;
+ let a,b,ans,context="",expression="",hint="";
+ if(topic==="add"){a=rand(1,max-1);b=rand(1,max-a);ans=a+b;expression=`${a} + ${b} = ?`;hint=`Alusta arvust ${a} ja loenda ${b} võrra edasi.`;}
+ if(topic==="sub"){a=rand(2,max);b=rand(1,a);ans=a-b;expression=`${a} − ${b} = ?`;hint=`Alusta arvust ${a} ja loenda ${b} võrra tagasi.`;}
+ if(topic==="mul"){a=rand(2,grade===2?5:10);b=rand(2,10);ans=a*b;expression=`${a} × ${b} = ?`;hint=`Liida arvu ${a} kokku ${b} korda.`;}
+ if(topic==="div"){b=rand(2,grade===2?5:10);ans=rand(2,10);a=b*ans;expression=`${a} ÷ ${b} = ?`;hint=`Millise arvuga tuleb ${b} korrutada, et saada ${a}?`;}
+ if(topic==="compare"){a=rand(0,100);b=rand(0,100);ans=a>b?1:a<b?2:3;context="Vali õige vastuse number: 1 = esimene arv on suurem, 2 = teine arv on suurem, 3 = arvud on võrdsed.";expression=`${a}   ja   ${b}`;hint="Võrdle kõigepealt kümnelisi ja seejärel ühelisi.";}
+ if(topic==="story"){a=rand(2,grade===1?12:grade===2?45:150);b=rand(2,grade===1?8:grade===2?40:120);if(grade===1&&a+b>20)b=20-a;if(b<1)b=1;ans=a+b;context=`Maril oli ${a} kleepsu. Ta sai juurde ${b} kleepsu. Mitu kleepsu on Maril nüüd?`;expression="?";hint="Kui asju tuleb juurde, tuleb arvud liita.";}
+ if(topic==="shape"){if(grade===3){a=rand(2,15);b=rand(2,15);ans=2*(a+b);context=`Ristküliku pikkus on ${a} cm ja laius ${b} cm. Leia ümbermõõt sentimeetrites.`;expression="? cm";hint="Liida kokku kõik neli külge: pikkus + laius + pikkus + laius.";}else{const shapes=[["kolmnurgal",3],["ruudul",4],["ristkülikul",4],["viisnurgal",5]];const [name,n]=pick(shapes);ans=n;context=`Mitu külge on ${name}?`;expression="?";hint="Kujuta kujundit ette ja loenda selle sirged küljed.";} }
+ if(topic==="life"){if(Math.random()<.5){a=rand(1,10);b=rand(1,10);ans=a+b;context=`Sul on ${a} eurot ja saad juurde ${b} eurot. Mitu eurot sul nüüd on?`;expression="? €";hint="Liida eurod kokku.";}else{a=rand(1,11);b=rand(1,12-a);ans=a+b;context=`Kell on ${a}:00. Möödub ${b} tundi. Mis kell on? Sisesta ainult tund.`;expression="?:00";hint="Liida algsele kellaajale möödunud tunnid.";} }
+ if(topic==="measure"){if(grade===2){a=rand(1,9);ans=a*100;context=`Mitu sentimeetrit on ${a} meetrit?`;expression="? cm";hint="1 meeter = 100 sentimeetrit.";}else{if(Math.random()<.5){a=rand(1,15);ans=a*60;context=`Mitu minutit on ${a} tundi?`;expression="? min";hint="1 tund = 60 minutit.";}else{a=rand(1,20);ans=a*10;context=`Mitu millimeetrit on ${a} sentimeetrit?`;expression="? mm";hint="1 sentimeeter = 10 millimeetrit.";}}}
+ return {ans,context,expression,hint};
+}
+function newQuestion(){question=generate();solved=false;wrongTried=false;$("context").textContent=question.context;$("expression").textContent=question.expression;$("answer").value="";$("answer").disabled=false;$("check").disabled=false;$("feedback").textContent="";$("feedback").className="feedback";$("hintBox").textContent=question.hint;$("hintBox").classList.add("hidden");renderStats();$("answer").focus();}
+$("answerForm").addEventListener("submit",e=>{e.preventDefault();if(solved)return;const v=Number($("answer").value.replace(",","."));if($("answer").value.trim()===""||!Number.isFinite(v))return;
+if(v===question.ans){solved=true;const s=stats();s.attempts++;if(!wrongTried)s.correct++;save(s);renderStats();$("feedback").textContent=wrongTried?"Tubli, said õige vastuse! 🌟":"Õige vastus! Suurepärane! 🌟";$("feedback").className="feedback good";$("answer").disabled=true;$("check").disabled=true;}
+else{wrongTried=true;$("feedback").textContent="Proovi veel! Sa saad hakkama. 💛";$("feedback").className="feedback retry";$("answer").select();}});
+$("hintBtn").addEventListener("click",()=>$("hintBox").classList.toggle("hidden"));
+$("nextBtn").addEventListener("click",()=>{if(!solved){const s=stats();s.attempts++;save(s);}newQuestion();});
+$("backHome").addEventListener("click",()=>show("home"));
+$("backTopics").addEventListener("click",()=>show("topics"));
+[1,2,3].forEach((g)=>{const b=document.createElement("button");b.className="grade";b.innerHTML=`<span class="emoji">${["","🧸","🚀","🌈"][g]}</span><strong>${g}. klass</strong><span>${["","Avastan arve ja kujundeid","Harjutan uusi tehteid","Lahendan põnevaid ülesandeid"][g]}</span>`;b.addEventListener("click",()=>selectGrade(g));$("grades").append(b);});
 </script></body></html>
